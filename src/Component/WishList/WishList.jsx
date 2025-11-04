@@ -1,108 +1,162 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CartContext } from "../../Context/CartContext";
-import { Link, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import $ from "jquery";
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function WishList() {
-  let [WichData, setCartData] = useState(null);
-  let {
+  const [wishData, setWishData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
     addCart,
-    getAllCartData,
-    updateProductQuantity,
     setCartCount,
-    addWishList,
     deleteWichlist,
     getAllWichhtData,
   } = useContext(CartContext);
-  let { id } = useParams();
 
+  // ✅ تحميل الـ Wishlist أول ما الصفحة تفتح
   useEffect(() => {
-    // getAllData()
-
-    getwichlist();
+    getWishlist();
   }, []);
 
-  async function DeleteWichlist(id) {
-    let { data } = await deleteWichlist(id);
-    setCartData(data.data);
-    setCartCount(data.numOfCartItems);
-    getwichlist();
-  }
-  async function AddWishList(id) {
-    let { data } = await addWishList(id);
-    setCartData(data.data);
-    setCartCount(data.numOfCartItems);
-  }
-
-  async function updateCount(id, count) {
-    let { data } = await updateProductQuantity(id, count);
-    console.log(data);
-    setCartData(data.data);
-  }
-
-  async function getAllData() {
-    let { data } = await getAllCartData();
-    console.log(data);
-    setCartData(data.data);
-  }
-  async function getwichlist() {
-    $(".loading").fadeIn();
-
-    let { data } = await getAllWichhtData();
-    console.log(data);
-    setCartData(data.data);
-    $(".loading").fadeOut(1000);
-  }
-
-  async function addDataToCart(id) {
-    let { data } = await addCart(id);
-    if (data.status == "success") {
-      setCartCount(data.numOfCartItems);
-      toast.success(data.message);
-    } else {
-      toast.error("Error");
+  async function getWishlist() {
+    try {
+      setIsLoading(true);
+      const { data } = await getAllWichhtData();
+      setWishData(data.data);
+    } catch {
+      toast.error("Error fetching wishlist");
+    } finally {
+      setIsLoading(false);
     }
-    console.log(data.data);
+  }
+
+  async function handleDelete(id) {
+    try {
+      const { data } = await deleteWichlist(id);
+      if (data.status === "success") {
+        toast.success("Removed from wishlist ");
+        // ✅ شيل المنتج محلياً من الواجهة
+        setWishData((prev) => prev.filter((item) => item._id !== id));
+      }
+    } catch {
+      toast.error("Error removing item");
+    }
+  }
+
+  async function handleAddToCart(id) {
+    try {
+      const { data } = await addCart(id);
+      if (data.status === "success") {
+        setCartCount(data.numOfCartItems);
+        toast.success("Added to cart successfully 🛒");
+      } else {
+        toast.error("Error adding to cart");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
   }
 
   return (
-    <div className="bg-light p-4 my-5">
-      <div className="loading position-fixed top-0 end-0 bottom-0 start-0 bg-white">
-        <i className="fa-solid fa-spinner fa-spin fa-5x"></i>
-      </div>
+    <>
+      <Toaster />
+      <div className="container my-5 position-relative">
 
-      <h1>My wish List</h1>
-      {WichData?.map((el) => {
-        return (
-          <div key={el._id} className="row py-2 border-bottom d-flex">
-            <div className=" col-md-11 my-4">
-              <div className="row align-items-center">
-                <div className="col-md-3">
-                  <img src={el.imageCover} className="w-100" alt="" />
-                </div>
-                <div className="col-md-8">
-                  <h6>{el.title}</h6>
-                  <p className="text-main">{el.price}</p>
-                  <div className="d-flex justify-content-between ">
-                    <span
-                      className=" mx-5 btn btn-outline-danger cursor-pointer"
-                      onClick={() => DeleteWichlist(el._id)}
-                    >
-                      <i class="fa-solid fa-trash-can text-danger "></i>Remove
-                    </span>
-                    <button
-                      onClick={() => addDataToCart(el._id)}
-                      className=" btn btn-outline-success my-2 d-block "
-                    >
-                      Add Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* ✅ Loading Overlay */}
+        {isLoading && (
+          <div
+            className="position-fixed top-0 end-0 bottom-0 start-0 bg-white d-flex justify-content-center align-items-center"
+            style={{ zIndex: 9999 }}
+          >
+            <i className="fa-solid fa-spinner fa-spin fa-5x text-success"></i>
           </div>
-        );
-      })}
-    </div>
+        )}
+
+        <h2 className="text-center fw-bold text-main mb-4">
+          My Wishlist 
+        </h2>
+
+        {/* ✅ المحتوى */}
+        <AnimatePresence>
+          {!isLoading && (
+            <>
+              {wishData?.length > 0 ? (
+                <motion.div
+                  className="row g-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {wishData.map((el) => (
+                    <motion.div
+                      key={el._id}
+                      className="col-md-3"
+                      layout
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <div className="card shadow-sm border-0 rounded-4 h-100 text-center p-3 position-relative bg-white">
+                        <motion.img
+                          src={el.imageCover}
+                          alt={el.title}
+                          className="card-img-top mb-3 rounded-3"
+                          style={{
+                            objectFit: "contain",
+                            height: "220px",
+                            backgroundColor: "#f9f9f9",
+                          }}
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.3 }}
+                        />
+
+                        <div className="card-body">
+                          <h6 className="fw-bold mb-2">{el.title}</h6>
+                          <p className="text-success fw-semibold mb-3">
+                            {el.price} EGP
+                          </p>
+
+                          <div className="d-flex justify-content-between">
+                            <motion.button
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleDelete(el._id)}
+                              className="btn btn-outline-danger flex-grow-1 me-2"
+                            >
+                              <i className="fa-solid fa-trash-can me-1"></i>
+                              Remove
+                            </motion.button>
+
+                            <motion.button
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleAddToCart(el._id)}
+                              className="btn btn-success flex-grow-1"
+                            >
+                              <i className="fa-solid fa-cart-plus me-1"></i>
+                              Add to Cart
+                            </motion.button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  className="text-center py-5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <i className="fa-solid fa-heart-crack fa-3x text-muted mb-3"></i>
+                  <h5 className="text-muted">Your wishlist is empty</h5>
+                </motion.div>
+              )}
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
   );
 }

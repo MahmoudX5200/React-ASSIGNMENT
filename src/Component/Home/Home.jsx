@@ -10,105 +10,135 @@ import { Helmet } from 'react-helmet'
 
 export default function Home() {
 
-
-  let { addCart ,setCartCount} = useContext(CartContext)
+  let { addCart, setCartCount, AddWishList, RemoveWishList, wishList, getUserWishList } = useContext(CartContext)
   let baseUrl = "https://ecommerce.routemisr.com"
   let [productList, setProductList] = useState([])
   let [productListCode, setProductListCode] = useState([])
+  let [loading, setLoading] = useState(false)
+  let [wishlistItems, setWishlistItems] = useState([])
+
   useEffect(() => {
-    let link = document.querySelectorAll(".page-item a")
-    link.forEach((el) => {
-      el.addEventListener("click", function (e) {
-        console.log(e.target.innerText);
-        let page = e.target.innerText
-        getAllProduct(page)
-
-      })
-    })
-
     getAllProduct()
+    getWishList()
   }, [])
+
+  async function getWishList() {
+    let { data } = await getUserWishList()
+    setWishlistItems(data?.data?.map(item => item._id) || [])
+  }
+
   async function getAllProduct(page = 1) {
-    $(".loading").fadeIn()
+    setLoading(true)
     let { data } = await axios.get(`${baseUrl}/api/v1/products/?page=${page}`)
     setProductList(data.data)
     setProductListCode(data.data)
-    console.log(data.data);
-    $(".loading").fadeOut(1000)
+    setTimeout(() => setLoading(false), 500)
   }
 
   async function addDataToCart(id) {
     let { data } = await addCart(id)
-    if (data.status == 'success') {
+    if (data.status === 'success') {
       setCartCount(data.numOfCartItems)
       toast.success(data.message)
-    }else{
+    } else {
       toast.error("Error")
     }
-    console.log(data.data);
   }
-  function Search (event)
-  {
-   let searchVal = event.target.value
-   let myProduct=[...productListCode]
-myProduct =productListCode.filter ((el)=>{
-  return   el.title.toLowerCase().includes(searchVal.toLowerCase())
-})
-setProductList(myProduct)
 
+  async function toggleWishlist(id) {
+    if (wishlistItems.includes(id)) {
+      await RemoveWishList(id)
+      setWishlistItems(prev => prev.filter(item => item !== id))
+      toast.error("Removed from wishlist")
+    } else {
+      await AddWishList(id)
+      setWishlistItems(prev => [...prev, id])
+      toast.success("Added to wishlist")
+    }
   }
+
+  function Search(event) {
+    let searchVal = event.target.value
+    let myProduct = productListCode.filter((el) =>
+      el.title.toLowerCase().includes(searchVal.toLowerCase())
+    )
+    setProductList(myProduct)
+  }
+
   return (
     <>
-    <Helmet>
-    
-      <title>Home</title>
-    </Helmet>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
       <Toaster />
       <MainSlider />
       <CategorySlider />
+
       <div className='my-5 position-relative'>
-        <div className='loading position-fixed top-0 end-0 bottom-0 start-0 bg-white'>
-          <i className='fa-solid fa-spinner fa-spin fa-5x'></i>
-        </div>
+        {loading && (
+          <div className='loading position-fixed top-0 end-0 bottom-0 start-0 bg-white d-flex justify-content-center align-items-center'>
+            <i className='fa-solid fa-spinner fa-spin fa-4x text-success'></i>
+          </div>
+        )}
+
         <div className='row g-4 '>
-          <input type="text" onChange={(e)=>Search(e)} placeholder='Search' className='form-control' id='Search' />
+          <h2 className='text-center mb-3'>Search Product</h2>
+          <input
+            type="text"
+            onChange={(e) => Search(e)}
+            placeholder='Search'
+            className='form-control mb-4'
+            id='Search'
+          />
+
           {productList.map((product) => {
-            return <div key={product._id} className='col-md-3'>
-              <div className='product cursor-pointer'>
-                <Link to={'/ProductDetails/' + product._id}>
-                  <img src={product.imageCover} className='w-100' alt="" />
-                  <p className='text-main'>{product.category.name}</p>
-                  <h6>{product.title.split(" ").slice(0, 2).join(" ")}</h6>
-                  <div className='d-flex justify-content-between'>
-                    <span>{product.price}EGP</span>
-                    <span>
-                      <i className='fa-solid fa-star rating-color'></i>
-                      {product.ratingsAverage}
-                    </span>
+            const isWished = wishlistItems.includes(product._id)
+            return (
+              <div key={product._id} className='col-md-3'>
+                <div className="product-card border rounded-3 shadow-sm p-3 text-center h-100 position-relative bg-white cursor-pointer transition-all">
+                  <Link to={'/ProductDetails/' + product._id} className="text-decoration-none text-dark">
+                    <img
+                      src={product.imageCover}
+                      className="w-100 mb-3 rounded-3"
+                      alt={product.title}
+                      style={{ objectFit: "contain", height: "230px" }}
+                    />
+                    <p className="text-success fw-semibold mb-1">{product.category.name}</p>
+                    <h6 className="fw-bold mb-2">{product.title.split(" ").slice(0, 2).join(" ")}</h6>
+                    <div className="d-flex justify-content-between align-items-center px-2">
+                      <span className="fw-bold">{product.price} EGP</span>
+                      <span className="text-warning fw-semibold">
+                        <i className="fa-solid fa-star me-1"></i>
+                        {product.ratingsAverage}
+                      </span>
+                    </div>
+                  </Link>
+
+                  <div className="actions-container mt-3 d-flex justify-content-between align-items-center px-2">
+                    <i
+                      onClick={() => toggleWishlist(product._id)}
+                      className={`fa-solid fa-heart fa-lg cursor-pointer ${isWished ? 'text-danger' : 'text-dark'}`}
+                    ></i>
+                    <button
+                      onClick={() => addDataToCart(product._id)}
+                      className="btn btn-success w-75 fw-semibold add-btn"
+                    >
+                      Add to Cart
+                    </button>
                   </div>
-       
-                </Link>
-               <i class="fa-solid fa-heart fa-2x"></i>
-     
-                <button onClick={() => addDataToCart(product._id)} className='btn btn-success my-2 d-block w-100'>Add Cart</button>
-                
+                </div>
               </div>
-            </div>
+            )
           })}
         </div>
 
         <nav className='d-flex justify-content-center py-2' aria-label="Page navigation example">
-          <ul className="pagination ">
-
-            <li className="page-item"><a className="page-link" >1</a></li>
-            <li className="page-item"><a className="page-link" >2</a></li>
-
+          <ul className="pagination">
+            <li className="page-item"><a className="page-link">1</a></li>
+            <li className="page-item"><a className="page-link">2</a></li>
           </ul>
         </nav>
-
-
       </div>
-
     </>
   )
 }

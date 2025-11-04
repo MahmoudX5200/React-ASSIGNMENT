@@ -36,9 +36,9 @@ export default function Navbar({ userData, Logout }) {
               <Link className="nav-link" to="product">Product</Link>
             </li>
 
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link" to="category">category</Link>
-            </li>
+            </li> */}
             <li className="nav-item">
               <Link className="nav-link" to="brands">Brands</Link>
             </li>

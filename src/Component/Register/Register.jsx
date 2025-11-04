@@ -48,43 +48,43 @@ export default function Register() {
 
   return (
     <div className='py-5'>
-      <h2>Register Form</h2>
+      <h2 className='text-center'>Register Form</h2>
       {errMessage == "" ? null : <div className='alert alert-danger'>{errMessage}</div>}
 
  
       <form onSubmit={registerForm.handleSubmit}>
         <div className='my-2'>
-          <label htmlFor="name">name</label>
-          <input onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="text" className='form-control' name="name" id="name" />
+          <label htmlFor="name">Name</label>
+          <input onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="text" className='form-control mt-2' name="name" id="name" />
 
           {registerForm.touched.name  && registerForm.errors.name? <p className='text-danger'>{registerForm.errors.name}</p> : ""}
 
         </div>
         <div className='my-2'>
-          <label htmlFor="email">email</label>
-          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="email" className='form-control' name="email" id="email" />
+          <label htmlFor="email">Email</label>
+          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="email" className='form-control mt-2' name="email" id="email" />
           {registerForm.touched.email ? <p className='text-danger'>{registerForm.errors.email}</p> : ""}
         </div>
         <div className='my-2'>
-          <label  htmlFor="password">password</label>
-          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="password" className='form-control' name="password" id="password" />
+          <label  htmlFor="password">Password</label>
+          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="password" className='form-control mt-2' name="password" id="password" />
 
           {registerForm.touched.password ? <p className='text-danger'>{registerForm.errors.password}</p> : ""}
 
         </div>
         <div className='my-2'>
-          <label htmlFor="rePassword">re Password</label>
-          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="password" className='form-control' name="rePassword" id="rePassword" />
+          <label htmlFor="rePassword">Re Password</label>
+          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="password" className='form-control mt-2' name="rePassword" id="rePassword" />
           {registerForm.touched.rePassword ? <p className='text-danger'>{registerForm.errors.rePassword}</p> : ""}
         </div>
         <div className='my-2'>
-          <label htmlFor="phone">phone</label>
-          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="tel" className='form-control' name="phone" id="phone" />
+          <label htmlFor="phone">Phone</label>
+          <input  onBlur={registerForm.handleBlur} onChange={registerForm.handleChange} type="tel" className='form-control mt-2' name="phone" id="phone" />
           {registerForm.touched.phone ? <p className='text-danger'>{registerForm.errors.phone}</p> : ""}
         </div>
         {loading ? <button type='button' className='btn btn-success ms-auto d-block'>
           <i className='fa-solid fa-spinner fa-spin'></i>
-        </button> : <button disabled={!(registerForm.isValid && registerForm.dirty)} type='submit' className='btn btn-success ms-auto d-block'>Register</button>
+        </button> : <button disabled={!(registerForm.isValid && registerForm.dirty)} type='submit' className='btn btn-success ms-auto d-block mt-2'>Register</button>
         }
 
       </form>
