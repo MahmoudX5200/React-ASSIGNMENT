@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/React-ASSIGNMENT/static/css/main.70f1bb15.css",
-    "main.js": "/React-ASSIGNMENT/static/js/main.d61c64ae.js",
+    "main.css": "/React-ASSIGNMENT/static/css/main.9c0be653.css",
+    "main.js": "/React-ASSIGNMENT/static/js/main.239cebee.js",
     "static/js/586.b3a1f086.chunk.js": "/React-ASSIGNMENT/static/js/586.b3a1f086.chunk.js",
     "static/media/fa-solid-900.ttf": "/React-ASSIGNMENT/static/media/fa-solid-900.d75e3fd1eb12e9bd6655.ttf",
     "static/media/slider-image-1.jpeg": "/React-ASSIGNMENT/static/media/slider-image-1.3c3940ee0f1c3b17ff9a.jpeg",
@@ -12,17 +12,17 @@
     "static/media/fa-brands-400.woff2": "/React-ASSIGNMENT/static/media/fa-brands-400.878f31251d960bd6266f.woff2",
     "static/media/fa-regular-400.ttf": "/React-ASSIGNMENT/static/media/fa-regular-400.50701fbb8177c2dde530.ttf",
     "static/media/fa-regular-400.woff2": "/React-ASSIGNMENT/static/media/fa-regular-400.b041b1fa4fe241b23445.woff2",
-    "static/media/freshcart-logo.svg": "/React-ASSIGNMENT/static/media/freshcart-logo.53f7a424c3aedc30a0fb46dc2278137c.svg",
+    "static/media/freshcart-logo.svg": "/React-ASSIGNMENT/static/media/freshcart-logo.af33f2cb2a100f447f3b8c388932e12a.svg",
     "static/media/fa-v4compatibility.ttf": "/React-ASSIGNMENT/static/media/fa-v4compatibility.c6a0c95b0a95c4553700.ttf",
     "static/media/fa-v4compatibility.woff2": "/React-ASSIGNMENT/static/media/fa-v4compatibility.1bac2991f3dbfa237aec.woff2",
     "static/media/logo.svg": "/React-ASSIGNMENT/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/React-ASSIGNMENT/index.html",
-    "main.70f1bb15.css.map": "/React-ASSIGNMENT/static/css/main.70f1bb15.css.map",
-    "main.d61c64ae.js.map": "/React-ASSIGNMENT/static/js/main.d61c64ae.js.map",
+    "main.9c0be653.css.map": "/React-ASSIGNMENT/static/css/main.9c0be653.css.map",
+    "main.239cebee.js.map": "/React-ASSIGNMENT/static/js/main.239cebee.js.map",
     "586.b3a1f086.chunk.js.map": "/React-ASSIGNMENT/static/js/586.b3a1f086.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.70f1bb15.css",
-    "static/js/main.d61c64ae.js"
+    "static/css/main.9c0be653.css",
+    "static/js/main.239cebee.js"
   ]
 }
